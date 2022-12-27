@@ -1,4 +1,7 @@
 #acode-plugin-packageAdder{
+    .hide{
+        display: none;
+    }
     .plugPage1{
         max-height: 100%;
         padding: 10px;
@@ -21,11 +24,11 @@
             }
         }
         .mainlistCont{
-            height: 35rem;
+            height: 37rem;
             display: flex;
             flex-direction: column;
             padding: 10px;
-            overflow: auto;
+            overflow-x: scroll;
             margin-top: 15px;
             ul{
                 list-style: none;
@@ -65,11 +68,36 @@
         }
     }
     .plugPage2{
-        height: 100%;
-        background: blue;
+        max-height: 100%;
+        padding: 10px;
+        .headerDiv{
+            display: flex;
+            padding: 20px;
+            h2{
+                font-size: 25px;
+                width: 100%;
+            }
+            select{
+                padding: 8px;
+                margin-left: 10px;
+                outline: none;
+            }
+        }
+        .mainDiv{
+            padding: 20px;
+            .group{
+                margin-bottom: 25px;
+                label{
+                    font-size: 15px;
+                    color: #eff0f0;
+                    font-weight: 700;
+                    margin-bottom: 20px;
+                }
+                p{
+                    font-size: 18px;
+                    font-weight: 500;
+                }
+            }
+        }
     }
-    .hide{
-        display: none;
-    }
-    
 }
