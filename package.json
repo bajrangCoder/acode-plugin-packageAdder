@@ -1,0 +1,42 @@
+{
+  "name": "acode-plugin-packageAdder",
+  "version": "1.0.0",
+  "description": "Add Package Plugin For Acode",
+  "main": "dist/main.js",
+  "scripts": {
+    "start-dev": "node .vscode/start-dev",
+    "build": "webpack",
+    "build-release": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bajrangCoders/acode-plugin-template.git"
+  },
+  "author": "Raunak Raj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bajrangCoders/acode-plugin-template/issues"
+  },
+  "homepage": "https://github.com/bajrangCoders/acode-plugin-template#readme",
+  "dependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.20.5",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/preset-env": "^7.20.2",
+    "autoprefixer": "^10.4.13",
+    "babel-loader": "^9.1.0",
+    "html-tag-js": "^1.1.22",
+    "ip": "^1.1.8",
+    "live-server": "^1.2.2",
+    "postcss": "^8.4.20",
+    "postcss-loader": "^7.0.2",
+    "raw-loader": "^4.0.2",
+    "sass": "^1.57.1",
+    "sass-loader": "^13.2.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^4.11.1"
+  }
+}

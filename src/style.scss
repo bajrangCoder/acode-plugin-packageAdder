@@ -1,0 +1,75 @@
+#acode-plugin-packageAdder{
+    .plugPage1{
+        max-height: 100%;
+        padding: 10px;
+        .searchBar{
+            display: flex;
+            padding: 10px;
+            .searchInput{
+                padding: 5px;
+                width: 100%;
+                margin-right: 10px;
+                font-size: 18px;
+            }
+            button{
+                border: none;
+                background: var(--button-background-color);
+                color: var(--button-text-color);
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 18px;
+            }
+        }
+        .mainlistCont{
+            height: 35rem;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow: auto;
+            margin-top: 15px;
+            ul{
+                list-style: none;
+                li{
+                    padding: 20px;
+                    margin-bottom: 15px;
+                    max-height: 100%;
+                    border-radius: 10px;
+                    &:hover{
+                        background: var(--primary-color);
+                        transition: 0.3s ease-in-out;
+                    }
+                    .pkgHeader{
+                        display: flex;
+                        h4{
+                            margin-left: 20px;
+                            font-weight: 500;
+                        }
+                    }
+                    .pkgMain{
+                        display: flex;
+                        margin-top: 10px;
+                        p{
+                            width: 100%;
+                            font-size: 15px;
+                            font-weight: 400;
+                        }
+                        span{
+                            display: flex;
+                            align-items: center;
+                            font-size: 25px;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .plugPage2{
+        height: 100%;
+        background: blue;
+    }
+    .hide{
+        display: none;
+    }
+    
+}
