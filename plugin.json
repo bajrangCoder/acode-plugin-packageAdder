@@ -1,6 +1,6 @@
 {
-  "id": "acode.plugin.packageAdder",
-  "name": "Add Package",
+  "id": "acode.plugin.moduleAdder",
+  "name": "Module Adder",
   "type": "free",
   "main": "dist/main.js",
   "version": "1.0.0",
@@ -8,7 +8,7 @@
   "icon": "icon.png",
   "files": [],
   "author": {
-    "name": "Raunak & David",
+    "name": "Raunak ",
     "email": "bajrangcoders@gmail.com",
     "github": "bajrangCoder"
   }

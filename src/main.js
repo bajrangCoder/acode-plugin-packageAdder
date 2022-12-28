@@ -3,19 +3,20 @@ import style from './style.scss';
 import tag from 'html-tag-js';
 
 const loader = acode.require('loader');
-
+const select = acode.require('select');
+const cAlert = acode.require('alert');
 
 class AddPackage {
     
     async init($page) {
         let command = {
-            name: "Add Package",
-            description: "Add Package",
+            name: "Module Adder",
+            description: "Module Adder",
             exec: this.run.bind(this),
         }
         editorManager.editor.commands.addCommand(command);
-        $page.id = 'acode-plugin-packageAdder';
-        $page.settitle("Add Package");
+        $page.id = 'acode-plugin-moduleAdder';
+        $page.settitle("Module Adder");
         this.$page = $page;
         this.$style = tag('style', {
             textContent: style,
@@ -94,30 +95,41 @@ class AddPackage {
         field4.append(...[lb4,this.filesList]);
         this.$plugPage2.append(headerDiv);
         this.$plugPage2.append(mainDiv);
+        this.footer = tag('div',{
+            className: "footer",
+        });
         this.$backBtn = tag('button',{
             textContent: "Back",
+            className: "backBtn",
         });
-        this.$plugPage2.append(this.$backBtn);
+        this.$addLibBtn = tag('button',{
+            textContent: "Add Library",
+            className: "addLibBtn",
+        });
+        this.footer.append(...[this.$backBtn,this.$addLibBtn]);
+        this.$plugPage2.append(this.footer);
         this.$backBtn.onclick = this.backToPage1.bind(this);
+        this.$addLibBtn.onclick = this.addLibrary.bind(this);
+        this.versionSelector.onchange = this.changeVersion.bind(this);
         document.head.append(this.$style);
         const onhide = this.$page.onhide;
         this.$page.onhide = () => {
-            this.$plugPage2.classList.toggle('hide');
-            this.$plugPage1.classList.toggle('hide');
+            this.$plugPage2.classList.add('hide');
+            this.$plugPage1.classList.add('hide');
         }
         onhide();
     }
     
     async run() {
-        this.loadLibraries('https://api.cdnjs.com/libraries?fields=filename,description,github&limit=10');
-        this.$plugPage1.classList.toggle('hide');
         this.$page.show();
+        this.loadLibraries('https://api.cdnjs.com/libraries?fields=filename,description,github&limit=10');
+        this.$plugPage1.classList.remove('hide');
     }
     
     async loadLibraries(url){
         try {
             this.pkgLists.innerHTML = '';
-            loader.create('Loading','Fetching data from api');
+            loader.create('Loading','Fetching data...');
             const response = await fetch(url);
             let data = await response.json();
             loader.destroy();
@@ -152,7 +164,7 @@ class AddPackage {
                 li.onclick = this.pkgDetails.bind(this,obj.name);
             });
         } catch (e) {
-            window.toast(e,5000);
+            this.closePlugin();
         }
     }
     
@@ -165,30 +177,76 @@ class AddPackage {
         
         let url = `https://api.cdnjs.com/libraries/${libNme}?fields=name,author,description,filename,version,versions,repository,license,assets`;
         try {
-            loader.create('Loading','Fetching data from api');
+            loader.create('Loading','Fetching data...');
             const response = await fetch(url);
             let data = await response.json();
             loader.destroy();
-            this.$plugPage1.classList.toggle('hide');
-            this.$plugPage2.classList.toggle('hide');
+            this.$plugPage1.classList.add('hide');
+            this.$plugPage2.classList.remove('hide');
             this.libName.textContent = data.name;
             this.descrTxt.textContent = data.description;
             this.lisenceTxt.textContent = data.license;
             this.authrTxt.textContent = data.author;
             
-            for(let i = 0;i<data.versions.length;i++){
-                if (data.versions[i] == data.version) {
-                    this.versionSelector.innerHTML += `<option value="${data.versions[i]}" selected>${data.versions[i]}</option>`;
+            const filteredVersions = data.versions.filter(version => {
+                return !version.includes('alpha') && !version.includes('beta') && !version.includes('rc') && !version.includes('csp') && !version.includes('migration');
+            });
+            let last50 = filteredVersions.slice(-50);
+            
+            for(let i = 0;i<last50.length;i++){
+                if (last50[i] == data.version) {
+                    this.versionSelector.innerHTML += `<option value="${last50[i]}" selected>${last50[i]}</option>`;
                 } else {
-                    this.versionSelector.innerHTML += `<option value="${data.versions[i]}">${data.versions[i]}</option>`;
+                    this.versionSelector.innerHTML += `<option value="${last50[i]}">${last50[i]}</option>`;
                 }
             }
+            this.filesList.innerHTML ="";
             let files = data.assets[0].files;
             for(let i = 0;i<files.length;i++){
-                this.filesList.innerHTML += `<li>${files[i]}</li>`;
+                const list = tag('li');
+                const filesCheckBox = tag('input',{
+                    type: "checkbox",
+                    className: "filesCheckBox",
+                    value: files[i],
+                });
+                const filesLabel = tag('p',{
+                    textContent: files[i],
+                    className: "filesLabel"
+                });
+                list.append(...[filesCheckBox,filesLabel]);
+                this.filesList.append(list);
             }
         } catch (e) {
-            window.toast(e,5000);
+            this.closePlugin();
+        }
+    }
+    
+    async changeVersion(){
+        let pkg_nme = this.libName.textContent;
+        let selectedVersion = this.versionSelector.value;
+        
+        let url = `https://api.cdnjs.com/libraries/${pkg_nme}/${selectedVersion}`;
+        try {
+            loader.create('Loading','Fetching files...');
+            const response = await fetch(url);
+            let data = await response.json();
+            loader.destroy();
+            this.filesList.innerHTML = '';
+            for(let i =0;i<data.files.length;i++){
+                const list = tag('li');
+                const filesCheckBox = tag('input',{
+                    type: "checkbox",
+                    className: "filesCheckBox",
+                    value: data.files[i],
+                });
+                const filesLabel = tag('p',{
+                    textContent: data.files[i],
+                });
+                list.append(...[filesCheckBox,filesLabel]);
+                this.filesList.append(list);
+            }
+        } catch (e) {
+            this.closePlugin();
         }
     }
     
@@ -197,10 +255,28 @@ class AddPackage {
         this.$plugPage1.classList.toggle('hide');
     }
     
+    closePlugin(){
+        this.$page.hide();
+        cAlert('Error','Connection error, check your internet and Try Again!');
+        loader.destroy();
+    }
+    
+    async addLibrary(){
+        const addLibTypeSelector = await select('Select Type', ["Api","Download Files"], {default: "Api",});
+        let filesCheckbox = document.querySelectorAll(".filesCheckBox");
+        let filesArray = [];
+        for (var i = 0; i < filesCheckbox.length; i++) {
+            if (filesCheckbox[i].checked) {
+                filesArray.push(filesCheckbox[i].value);
+            }
+        }
+        window.toast(filesArray,4000);
+    }
+    
     async destroy() {
         let command = {
-            name: "Add Package",
-            description: "Add Package",
+            name: "Module Adder",
+            description: "Module Adder",
             exec: this.run.bind(this),
         }
         editorManager.editor.commands.removeCommand(command);

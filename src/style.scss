@@ -1,4 +1,4 @@
-#acode-plugin-packageAdder{
+#acode-plugin-moduleAdder{
     .hide{
         display: none;
     }
@@ -46,6 +46,7 @@
                         h4{
                             margin-left: 20px;
                             font-weight: 500;
+                            font-size: 20px;
                         }
                     }
                     .pkgMain{
@@ -74,13 +75,19 @@
             display: flex;
             padding: 20px;
             h2{
-                font-size: 25px;
+                font-size: 20px;
                 width: 100%;
+                font-weight: 500;
             }
             select{
                 padding: 8px;
                 margin-left: 10px;
                 outline: none;
+                width: 100px;
+                background: transparent;
+                color: var(--secondary-text-color);
+                border: 1px solid var(--primary-color);
+                box-shadow: 0 2px 4px var(--box-shadow-color);
             }
         }
         .mainDiv{
@@ -89,14 +96,51 @@
                 margin-bottom: 25px;
                 label{
                     font-size: 15px;
-                    color: #eff0f0;
-                    font-weight: 700;
-                    margin-bottom: 20px;
+                    color: var(--border-color);
+                    font-weight: 500;
+                    margin-bottom: 10px;
                 }
                 p{
-                    font-size: 18px;
-                    font-weight: 500;
+                    margin-top: 10px;
+                    font-size: 17px;
+                    font-weight: 400;
                 }
+                ul {
+                    list-style: none;
+                    li{
+                        display: flex;
+                        margin-top: 10px;
+                        font-size: 17px;
+                        font-weight: 400;
+                        .filesLabel{
+                            width: 100%;
+                            margin-left: 10px;
+                        }
+                    }
+                }
+            }
+        }
+        .footer{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-top: 15px;
+            .backBtn{
+                border: none;
+                background: var(--primary-color);
+                color: var(--button-text-color);
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            .addLibBtn{
+                border: none;
+                background: var(--button-background-color);
+                color: var(--button-text-color);
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 18px;
             }
         }
     }
