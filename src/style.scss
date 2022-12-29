@@ -24,12 +24,21 @@
             }
         }
         .mainlistCont{
-            height: 37rem;
+            height: calc(100vh - 10rem);
             display: flex;
             flex-direction: column;
             padding: 10px;
-            overflow-x: scroll;
+            overflow-y: scroll;
             margin-top: 15px;
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+            &::-webkit-scrollbar-track {
+                background: var(--secondary-color);
+            }
+            &::-webkit-scrollbar-thumb {
+                background: var(--scrollbar-color);
+            }
             ul{
                 list-style: none;
                 li{
@@ -46,7 +55,7 @@
                         h4{
                             margin-left: 20px;
                             font-weight: 500;
-                            font-size: 20px;
+                            font-size: 16px;
                         }
                     }
                     .pkgMain{
@@ -107,11 +116,28 @@
                 }
                 ul {
                     list-style: none;
+                    height: calc(100vh - 32rem);
+                    overflow-y: scroll;
+                    margin-top: 8px;
+                    &::-webkit-scrollbar {
+                        width: 6px;
+                    }
+                    &::-webkit-scrollbar-track {
+                        background: var(--secondary-color);
+                    }
+                    &::-webkit-scrollbar-thumb {
+                        background: var(--scrollbar-color);
+                    }
                     li{
                         display: flex;
-                        margin-top: 10px;
+                        margin-top: 6px;
                         font-size: 17px;
                         font-weight: 400;
+                        .filesCheckBox{
+                            border-radius: 4px;
+                            border: solid 1px var(--secondary-text-color);
+                            accent-color: var(--button-background-color);
+                        }
                         .filesLabel{
                             width: 100%;
                             margin-left: 10px;
@@ -122,25 +148,31 @@
         }
         .footer{
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            margin-top: 15px;
+            flex-direction: row;
+            margin-bottom: 10px;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
             .backBtn{
                 border: none;
                 background: var(--primary-color);
                 color: var(--button-text-color);
-                padding: 10px;
+                padding: 12px;
                 border-radius: 10px;
                 font-size: 18px;
-                margin-bottom: 10px;
+                width: calc(100vh - 60%);
+                margin-right: 10px;
             }
             .addLibBtn{
                 border: none;
                 background: var(--button-background-color);
                 color: var(--button-text-color);
-                padding: 10px;
+                padding: 12px;
                 border-radius: 10px;
-                font-size: 18px;
+                font-size: 16px;
+                width: calc(100vh - 50%);
+                margin-right: 16px;
             }
         }
     }

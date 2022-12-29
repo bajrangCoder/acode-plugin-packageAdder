@@ -2,16 +2,18 @@ import plugin from '../plugin.json';
 import style from './style.scss';
 import tag from 'html-tag-js';
 
+
 const loader = acode.require('loader');
 const select = acode.require('select');
 const cAlert = acode.require('alert');
+const { fsOperation } = acode;
 
 class AddPackage {
     
     async init($page) {
         // Adding a `Add Package` command in command platte
         let command = {
-            name: "Add Package",
+            name: "packageAdder",
             description: "Add Package",
             exec: this.run.bind(this),
         }
@@ -111,7 +113,7 @@ class AddPackage {
             className: "backBtn",
         });
         this.$addLibBtn = tag('button',{
-            textContent: "Add this Package",
+            textContent: "Add Package",
             className: "addLibBtn",
         });
         this.footer.append(...[this.$backBtn,this.$addLibBtn]);
@@ -120,19 +122,21 @@ class AddPackage {
         this.$addLibBtn.onclick = this.addLibrary.bind(this);
         this.versionSelector.onchange = this.changeVersion.bind(this);
         document.head.append(this.$style);
+        this.$sriObj = {};
         const onhide = this.$page.onhide;
         this.$page.onhide = () => {
             this.$plugPage2.classList.add('hide');
             this.$plugPage1.classList.add('hide');
         }
         onhide();
-        this.$sriObj = {};
     }
     
     async run() {
+        //window.toast(addedFolders,4000)
         this.$page.show();
         this.loadLibraries('https://api.cdnjs.com/libraries?fields=filename,description,github&limit=10');
         this.$plugPage1.classList.remove('hide');
+        this.$plugPage2.classList.add('hide');
     }
     
     async loadLibraries(url){
@@ -157,10 +161,10 @@ class AddPackage {
                     textContent: obj.name,
                 });
                 const heading2 = tag('h4',{
-                    textContent: obj.github.stargazers_count,
+                    textContent: this.abbreviateNumber(obj.github.stargazers_count),
                 });
                 const heading3 = tag('h4',{
-                    textContent: obj.github.forks,
+                    textContent: this.abbreviateNumber(obj.github.forks),
                 });
                 pkgHeader.append(...[heading1,heading2,heading3]);
                 const descP = tag('p',{
@@ -290,13 +294,29 @@ class AddPackage {
         });
     }
     
+    abbreviateNumber(number) {
+        const numberString = number.toString();
+        const numberLength = numberString.length;
+        if (numberLength < 4) {
+            return numberString;
+        }
+        if (numberLength >= 4 && numberLength <= 6) {
+            return (number / 1000).toFixed(1) + "K";
+        }
+        if (numberLength >= 7) {
+            return (number / 1000000).toFixed(1) + "M";
+        }
+    }
+
+    
     backToPage1(){
-        this.$plugPage2.classList.toggle('hide');
-        this.$plugPage1.classList.toggle('hide');
+        this.$plugPage2.classList.add('hide');
+        this.$plugPage1.classList.remove('hide');
     }
     
     closePlugin(){
         this.$page.hide();
+        
         cAlert('Error','Connection error, check your internet and Try Again!');
         loader.destroy();
     }
@@ -320,6 +340,44 @@ class AddPackage {
         editorManager.editor.insert(api);
     }
     
+    async loadFileContent(url){
+        try {
+            const response = await fetch(url);
+            let data = await response.text();
+            return data;
+        } catch (e) {
+            this.closePlugin();
+        }
+    }
+    
+    async addThroughDownload(filesArray){
+        let { activeFile } = editorManager;
+        let { location } = activeFile;
+        let folderNme = 'modules';
+        let importScript = '';
+        let modulesFolderLoc = await fsOperation(location).createDirectory(folderNme);
+        for (let i=0;i<filesArray.length;i++) {
+            let url = `https://cdnjs.cloudflare.com/ajax/libs/${this.libName.textContent}/${this.versionSelector.value}/${filesArray[i]}`;
+            let fileData = await this.loadFileContent(url);
+            let filename = filesArray[i].split('.');
+            let fileType = filename.slice(-1)[0];
+            let newFileNme = filesArray[i].replace(/^(js|css|esm|cjs|umd)\//, "");
+            loader.create('Downloading',`Downloading selected files of library...\nFile: ${newFileNme}`);
+            await fsOperation(modulesFolderLoc).createFile(newFileNme,fileData);
+            switch (fileType) {
+                case 'js':
+                    importScript += `<script src="/${folderNme}/${newFileNme}"></script>\n`;
+                    break;
+                case 'css':
+                    importScript += `<link rel="stylesheet" href="/${folderNme}/${newFileNme}" />\n`;
+                    break;
+            }
+            editorManager.editor.insert(importScript);
+            loader.destroy();
+        }
+        window.toast('Success',4000);
+    }
+    
     async addLibrary(){
         const addLibTypeSelector = await select('Select Type', ["Api","Download Files"], {default: "Api",});
         let filesCheckbox = document.querySelectorAll(".filesCheckBox");
@@ -334,18 +392,14 @@ class AddPackage {
                 this.addThroughApi(filesArray);
                 break;
             case 'Download Files':
-                window.toast('It will come in future updates',4000);
+                this.addThroughDownload(filesArray);
+                //window.toast('It will come in future updates',4000);
                 break;
         }
     }
     
     async destroy() {
-        let command = {
-            name: "Add Package",
-            description: "Add Package",
-            exec: this.run.bind(this),
-        }
-        editorManager.editor.commands.removeCommand(command);
+        editorManager.editor.commands.removeCommand("packageAdder");
     }
 }
 
