@@ -1,6 +1,6 @@
 {
-  "id": "acode.plugin.moduleAdder",
-  "name": "Module Adder",
+  "id": "acode.plugin.packageAdder",
+  "name": "Add Package",
   "type": "free",
   "main": "dist/main.js",
   "version": "1.0.0",

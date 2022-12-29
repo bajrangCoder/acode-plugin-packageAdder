@@ -9,18 +9,22 @@ const cAlert = acode.require('alert');
 class AddPackage {
     
     async init($page) {
+        // Adding a `Add Package` command in command platte
         let command = {
-            name: "Module Adder",
-            description: "Module Adder",
+            name: "Add Package",
+            description: "Add Package",
             exec: this.run.bind(this),
         }
         editorManager.editor.commands.addCommand(command);
-        $page.id = 'acode-plugin-moduleAdder';
-        $page.settitle("Module Adder");
+        // Initialising $page for plugin
+        $page.id = 'acode-plugin-packageAdder';
+        $page.settitle("Add Package");
         this.$page = $page;
+        // Adding custom styles to $page 
         this.$style = tag('style', {
             textContent: style,
         });
+        // creating two div in $page
         this.$plugPage1 = tag('div',{
             className: 'plugPage1 hide',
         });
@@ -29,19 +33,23 @@ class AddPackage {
         });
         this.$page.append(this.$plugPage1);
         this.$page.append(this.$plugPage2);
+        // searchbar div for search input and search button in $page first div
         this.$searchBar = tag('div', {
             className: "searchBar",
         });
+        // div for displaying packages lists
         this.$mainlistCont = tag('div',{
             className: "mainlistCont",
         });
         this.$plugPage1.append(this.$searchBar);
         this.$plugPage1.append(this.$mainlistCont);
+        // input box for searching 
         this.$searchInput = tag('input', {
             type: 'search',
             className: 'searchInput',
-            placeholder: 'Enter Library Name',
+            placeholder: 'search packages(eg: vue)',
         });
+        // button for searching
         this.$searchBtn = tag('button', {
             textContent: 'Search',
         });
@@ -103,7 +111,7 @@ class AddPackage {
             className: "backBtn",
         });
         this.$addLibBtn = tag('button',{
-            textContent: "Add Library",
+            textContent: "Add this Package",
             className: "addLibBtn",
         });
         this.footer.append(...[this.$backBtn,this.$addLibBtn]);
@@ -118,6 +126,7 @@ class AddPackage {
             this.$plugPage1.classList.add('hide');
         }
         onhide();
+        this.$sriObj = {};
     }
     
     async run() {
@@ -187,10 +196,9 @@ class AddPackage {
             this.descrTxt.textContent = data.description;
             this.lisenceTxt.textContent = data.license;
             this.authrTxt.textContent = data.author;
-            
-            const filteredVersions = data.versions.filter(version => {
-                return !version.includes('alpha') && !version.includes('beta') && !version.includes('rc') && !version.includes('csp') && !version.includes('migration');
-            });
+            this.$sriObj = {};
+            this.$sriObj = data.assets[0].sri;
+            let filteredVersions = this.filterVersions(data.versions);
             let last50 = filteredVersions.slice(-50);
             
             for(let i = 0;i<last50.length;i++){
@@ -201,20 +209,36 @@ class AddPackage {
                 }
             }
             this.filesList.innerHTML ="";
-            let files = data.assets[0].files;
-            for(let i = 0;i<files.length;i++){
-                const list = tag('li');
-                const filesCheckBox = tag('input',{
-                    type: "checkbox",
-                    className: "filesCheckBox",
-                    value: files[i],
-                });
-                const filesLabel = tag('p',{
-                    textContent: files[i],
-                    className: "filesLabel"
-                });
-                list.append(...[filesCheckBox,filesLabel]);
-                this.filesList.append(list);
+            let filteredFiles = this.filterFiles(data.assets[0].files);
+            for(let i = 0;i<filteredFiles.length;i++){
+                if(data.filename == filteredFiles[i]){
+                    const list = tag('li');
+                    const filesCheckBox = tag('input',{
+                        type: "checkbox",
+                        className: "filesCheckBox",
+                        value: filteredFiles[i],
+                        checked: true,
+                    });
+                    const filesLabel = tag('p',{
+                        textContent: filteredFiles[i],
+                        className: "filesLabel"
+                    });
+                    list.append(...[filesCheckBox,filesLabel]);
+                    this.filesList.append(list);
+                }else{
+                    const list = tag('li');
+                    const filesCheckBox = tag('input',{
+                        type: "checkbox",
+                        className: "filesCheckBox",
+                        value: filteredFiles[i],
+                    });
+                    const filesLabel = tag('p',{
+                        textContent: filteredFiles[i],
+                        className: "filesLabel"
+                    });
+                    list.append(...[filesCheckBox,filesLabel]);
+                    this.filesList.append(list);
+                    }
             }
         } catch (e) {
             this.closePlugin();
@@ -232,15 +256,19 @@ class AddPackage {
             let data = await response.json();
             loader.destroy();
             this.filesList.innerHTML = '';
-            for(let i =0;i<data.files.length;i++){
+            this.$sriObj = {};
+            this.$sriObj = data.sri;
+            let filteredFiles = this.filterFiles(data.files);
+            for(let i =0;i<filteredFiles.length;i++){
                 const list = tag('li');
                 const filesCheckBox = tag('input',{
                     type: "checkbox",
                     className: "filesCheckBox",
-                    value: data.files[i],
+                    value: filteredFiles[i],
                 });
                 const filesLabel = tag('p',{
-                    textContent: data.files[i],
+                    textContent: filteredFiles[i],
+                    className: "filesLabel"
                 });
                 list.append(...[filesCheckBox,filesLabel]);
                 this.filesList.append(list);
@@ -248,6 +276,18 @@ class AddPackage {
         } catch (e) {
             this.closePlugin();
         }
+    }
+    
+    filterFiles(filesArr){
+        return filesArr.filter(item => {
+            return item.endsWith(".js") || item.endsWith(".css");
+        });
+    }
+    
+    filterVersions(versionsArr){
+        return versionsArr.filter(version => {
+            return !version.includes('alpha') && !version.includes('beta') && !version.includes('rc') && !version.includes('csp') && !version.includes('migration');
+        });
     }
     
     backToPage1(){
@@ -261,6 +301,25 @@ class AddPackage {
         loader.destroy();
     }
     
+    addThroughApi(filesArray){
+        let api = '';
+        for (let i=0;i<filesArray.length;i++) {
+            let url = `https://cdnjs.cloudflare.com/ajax/libs/${this.libName.textContent}/${this.versionSelector.value}/${filesArray[i]}`;
+            let filename = filesArray[i].split('.');
+            let fileType = filename.slice(-1)[0];
+            switch (fileType) {
+                case 'js':
+                    api += `<script src="${url}" integrity="${this.$sriObj[filesArray[i]]}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>\n`;
+                    break;
+                case 'css':
+                    api += `<link rel="stylesheet" href="${url}" integrity="${this.$sriObj[filesArray[i]]}" crossorigin="anonymous" referrerpolicy="no-referrer" />\n`;
+                    break;
+            }
+        }
+        this.$page.hide();
+        editorManager.editor.insert(api);
+    }
+    
     async addLibrary(){
         const addLibTypeSelector = await select('Select Type', ["Api","Download Files"], {default: "Api",});
         let filesCheckbox = document.querySelectorAll(".filesCheckBox");
@@ -270,13 +329,20 @@ class AddPackage {
                 filesArray.push(filesCheckbox[i].value);
             }
         }
-        window.toast(filesArray,4000);
+        switch (addLibTypeSelector) {
+            case 'Api':
+                this.addThroughApi(filesArray);
+                break;
+            case 'Download Files':
+                window.toast('It will come in future updates',4000);
+                break;
+        }
     }
     
     async destroy() {
         let command = {
-            name: "Module Adder",
-            description: "Module Adder",
+            name: "Add Package",
+            description: "Add Package",
             exec: this.run.bind(this),
         }
         editorManager.editor.commands.removeCommand(command);
