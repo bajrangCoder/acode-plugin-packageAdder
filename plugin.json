@@ -1,14 +1,13 @@
 {
   "id": "acode.plugin.packageAdder",
   "name": "Add Package",
-  "type": "free",
   "main": "dist/main.js",
   "version": "1.0.0",
   "readme": "readme.md",
   "icon": "icon.png",
   "files": [],
   "author": {
-    "name": "Raunak ",
+    "name": "Raunak",
     "email": "bajrangcoders@gmail.com",
     "github": "bajrangCoder"
   }
