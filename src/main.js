@@ -19,7 +19,7 @@ class AddPackage {
         }
         editorManager.editor.commands.addCommand(command);
         // Initialising $page for plugin
-        $page.id = 'acode-plugin-packageAdder';
+        $page.id = 'acode-plugin-package-adder';
         $page.settitle("Add Package");
         this.$page = $page;
         // Adding custom styles to $page 

@@ -2,7 +2,7 @@
 Plugin helps you to add any npm(css,js) packages in your project (same as codepen features).
 
 ## Use
-For using search `Add Package` in command palette and it will open page with some top packages
+For using search `Add Package` in command palette(`•••`) and it will open page with some top packages
 , you can select any packages and add to your project.
 
 ## Features
