@@ -355,15 +355,19 @@ class AddPackage {
         let { location } = activeFile;
         let folderNme = 'modules';
         let importScript = '';
-        let modulesFolderLoc = await fsOperation(location).createDirectory(folderNme);
+        
+        if(!(await fsOperation(location+folderNme).exists())){
+            await fsOperation(location).createDirectory(folderNme);
+        }
+        
         for (let i=0;i<filesArray.length;i++) {
             let url = `https://cdnjs.cloudflare.com/ajax/libs/${this.libName.textContent}/${this.versionSelector.value}/${filesArray[i]}`;
             let fileData = await this.loadFileContent(url);
             let filename = filesArray[i].split('.');
             let fileType = filename.slice(-1)[0];
-            let newFileNme = filesArray[i].replace(/^(js|css|esm|cjs|umd)\//, "");
+            let newFileNme = filesArray[i].replace(/^(js|css|esm|cjs|umd|font|iconfont)\//, "");
             loader.create('Downloading',`Downloading selected files of library...\nFile: ${newFileNme}`);
-            await fsOperation(modulesFolderLoc).createFile(newFileNme,fileData);
+            await fsOperation(`${location}${folderNme}/`).createFile(newFileNme,fileData);
             switch (fileType) {
                 case 'js':
                     importScript += `<script src="/${folderNme}/${newFileNme}"></script>\n`;
@@ -393,7 +397,6 @@ class AddPackage {
                 break;
             case 'Download Files':
                 this.addThroughDownload(filesArray);
-                //window.toast('It will come in future updates',4000);
                 break;
         }
     }

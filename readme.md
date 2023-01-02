@@ -1,9 +1,9 @@
 # Add Package
-Plugin helps you to add any npm(css,js) packages in your project (same as codepen features).
+This Plugin helps you to add any npm(css,js) packages in your project (same as codepen features).
 
-## Use
+## Usage
 For using search `Add Package` in command palette(`•••`) and it will open page with some top packages
-, you can select any packages and add to your project.
+, you can select any packages and add to your project. You can also search packages.
 
 ## Features
 - Above 1 million packages are incuded
@@ -16,5 +16,15 @@ For using search `Add Package` in command palette(`•••`) and it will open 
 * This plugin requires internet connection
 * for adding packages to your project make sure to first open the html file in editor then run plugin
 
+Contribution are always welcome!
+
+----
+
 **Provide your feedbacks and suggestions and also report bugs(if found) on bellow link**
 > https://github.com/bajrangCoder/acode-plugin-packageAdder/issues
+
+**Leave a star 🌟 on github, if this plugin helpfull to you**
+
+----
+
+**Thanks for using Add Package plugin**
