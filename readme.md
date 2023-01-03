@@ -18,13 +18,13 @@ For using search `Add Package` in command palette(`•••`) and it will open 
 
 Contribution are always welcome!
 
-----
+---
 
 **Provide your feedbacks and suggestions and also report bugs(if found) on bellow link**
 > https://github.com/bajrangCoder/acode-plugin-packageAdder/issues
 
 **Leave a star 🌟 on github, if this plugin helpfull to you**
 
-----
+---
 
 **Thanks for using Add Package plugin**

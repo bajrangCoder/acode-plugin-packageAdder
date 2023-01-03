@@ -2,12 +2,12 @@
   "id": "acode.plugin.package.adder",
   "name": "Add Package",
   "main": "dist/main.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "readme": "readme.md",
   "icon": "icon.png",
   "files": [],
   "author": {
-    "name": "Raunak",
+    "name": "Raunak Raj",
     "email": "bajrangcoders@gmail.com",
     "github": "bajrangCoder"
   }

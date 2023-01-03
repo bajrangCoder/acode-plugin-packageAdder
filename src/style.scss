@@ -24,7 +24,7 @@
             }
         }
         .mainlistCont{
-            height: calc(100vh - 10rem);
+            height: calc(100vh - 10.2rem);
             display: flex;
             flex-direction: column;
             padding: 10px;
@@ -70,7 +70,7 @@
                             display: flex;
                             align-items: center;
                             font-size: 25px;
-                            font-weight: 700;
+                            font-weight: 400;
                         }
                     }
                 }
@@ -116,9 +116,11 @@
                 }
                 ul {
                     list-style: none;
-                    height: calc(100vh - 32rem);
+                    height: calc(100vh - 34rem);
                     overflow-y: scroll;
                     margin-top: 8px;
+                    border: 1px dotted var(--border-color);
+                    padding: 5px;
                     &::-webkit-scrollbar {
                         width: 6px;
                     }
@@ -152,8 +154,9 @@
             flex-direction: row;
             margin-bottom: 5px;
             width: 100%;
-            position: absolute;
-            bottom: 0;
+            position: fixed;
+            bottom:0;
+            overflow: hidden;
             .backBtn{
                 border: none;
                 background: var(--primary-color);

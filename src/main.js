@@ -366,20 +366,24 @@ class AddPackage {
             let filename = filesArray[i].split('.');
             let fileType = filename.slice(-1)[0];
             let newFileNme = filesArray[i].replace(/^(js|css|esm|cjs|umd|font|iconfont)\//, "");
-            loader.create('Downloading',`Downloading selected files of library...\nFile: ${newFileNme}`);
-            await fsOperation(`${location}${folderNme}/`).createFile(newFileNme,fileData);
-            switch (fileType) {
-                case 'js':
-                    importScript += `<script src="/${folderNme}/${newFileNme}"></script>\n`;
-                    break;
-                case 'css':
-                    importScript += `<link rel="stylesheet" href="/${folderNme}/${newFileNme}" />\n`;
-                    break;
+            let freshFileName = newFileNme.replace(/\//g, '-');
+            if(!(await fsOperation(`${location}${folderNme}/${freshFileName}`).exists())){
+                loader.create('Downloading',`Downloading selected files of library...\nFile: ${freshFileName}`);
+                await fsOperation(`${location}${folderNme}/`).createFile(freshFileName,fileData);
+                switch (fileType) {
+                    case 'js':
+                        importScript += `<script src="/${folderNme}/${freshFileName}"></script>\n`;
+                        break;
+                    case 'css':
+                        importScript += `<link rel="stylesheet" href="/${folderNme}/${freshFileName}" />\n`;
+                        break;
+                }
+                editorManager.editor.insert(importScript);
+                loader.destroy();
+                window.toast('Success',4000);
             }
-            editorManager.editor.insert(importScript);
-            loader.destroy();
+            //window.toast(`${freshFileName} - is already downloaded in your project folder`,3000)
         }
-        window.toast('Success',4000);
     }
     
     async addLibrary(){
