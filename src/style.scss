@@ -24,7 +24,7 @@
             }
         }
         .mainlistCont{
-            height: calc(100vh - 10.2rem);
+            height: calc(100vh - 12rem);
             display: flex;
             flex-direction: column;
             padding: 10px;
@@ -116,7 +116,7 @@
                 }
                 ul {
                     list-style: none;
-                    height: calc(100vh - 34rem);
+                    height: calc(100vh - 38rem);
                     overflow-y: scroll;
                     margin-top: 8px;
                     border: 1px dotted var(--border-color);
